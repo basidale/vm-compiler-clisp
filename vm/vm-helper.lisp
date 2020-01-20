@@ -7,17 +7,8 @@
 (defun vm-memory (vm)
   (cdr (assoc 'vm-memory vm)))
 
-(defun vm-registers (vm)
-  (cdr (assoc 'vm-registers vm)))
-
-(defmacro vm-get-register (vm register)
-  `(aref (vm-registers ,vm) (vm-register-index ,register)))
-
 (defun is-vm-running (vm)
   (cdr (vm-running-cell vm)))
-
-(defun vm-register-index (register)
-  (cdr (assoc register (vm-registers-mapping))))
 
 (defun vm-fp-find (vm offset)
   (aref (vm-memory vm) (+ (vm-get-register vm 'FP) offset)))

@@ -31,8 +31,6 @@
 (defun vm-add (vm args)
   (let ((src (car args))
 	(dest (cadr args)))
-    (print (vm-get-register vm src))
-    (print (vm-get-register vm dest))
     (setf (vm-get-register vm dest) (+ (vm-get-register vm src) (vm-get-register vm dest))))
   (+ (vm-get-register vm 'PC) 1))
 

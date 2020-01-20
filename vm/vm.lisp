@@ -14,16 +14,7 @@
 (require "vm-helper.lisp")
 (require "vm-address-resolution.lisp")
 (require "vm-statements.lisp")
-
-(defun vm-registers-mapping ()
-  '((R0 . 0)
-    (R1 . 1)
-    (R2 . 2)
-    (BP . 3)
-    (SP . 4)
-    (FP . 5)
-    (PC . 6)
-    (CMP . 7)))
+(require "vm-registers.lisp")
 
 (defun make-vm (&key name memory-size stack-size)
   `((vm-stack-size . ,stack-size)
