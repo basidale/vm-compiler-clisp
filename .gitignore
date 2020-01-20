@@ -1,0 +1,4 @@
+/res/*.fas
+/res/*.lib
+/vm/*.fas
+/vm/*.lib

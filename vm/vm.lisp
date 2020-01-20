@@ -9,6 +9,7 @@
 					;TODO: Automatically halt when code-end reached
 					;TODO: setf(aref) -> using macro
 					;TODO: Resolution table -> hashtable
+					;TODO: maybe add (pop nil)
 
 (require "vm-helper.lisp")
 (require "vm-address-resolution.lisp")
@@ -50,9 +51,10 @@
 (defun vm-run (&key main vm)
   (rplacd (vm-running-cell vm) t)
   (loop while (is-vm-running vm) do
-	(let ((next-pc (vm-exec (find-statement (vm-get-register vm 'PC) :vm vm) :vm vm)))
-	  (if next-pc
-	      (setf (aref (vm-registers vm) 6) next-pc)))))
+	(progn
+	  (let ((next-pc (vm-exec (find-statement (vm-get-register vm 'PC) :vm vm) :vm vm)))
+	    (if next-pc
+		(setf (aref (vm-registers vm) 6) next-pc))))))
 
 (defun vm-exec (stmt &key vm)
   (let ((verb (car stmt ))

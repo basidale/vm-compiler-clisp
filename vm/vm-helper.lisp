@@ -18,3 +18,6 @@
 
 (defun vm-register-index (register)
   (cdr (assoc register (vm-registers-mapping))))
+
+(defun vm-fp-find (vm offset)
+  (aref (vm-memory vm) (+ (vm-get-register vm 'FP) offset)))
