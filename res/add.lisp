@@ -3,9 +3,9 @@
 ;; (add 1 2)
 
 (setq codeadd '((push (:const 1))
-		(push (:cons 2))
+		(push (:const 2))
 		(move SP FP)
-		(push (:cons 2))
+		(push (:const 2))
 		(jsr add)
 		(halt)
 		(label add)

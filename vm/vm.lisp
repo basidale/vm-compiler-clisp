@@ -30,16 +30,16 @@
 	  (progn
 	    (setq index (+ index 1))
 	    (setf (aref (vm-memory vm) index) stmt)))
-    (rplacd (assoc 'vm-code-end vm) index)
-    (rplacd (assoc 'vm-stack-begin vm) (+ index 1))
-    (rplacd (assoc 'vm-stack-end vm) (+ (vm-stack-begin vm) (- (vm-stack-size vm) 1)))
+    (rplacd (vm-code-end-cell vm) index)
+    (rplacd (vm-stack-begin-cell vm) (+ index 1))
+    (rplacd (vm-stack-end-cell vm) (+ (vm-stack-begin vm) (- (vm-stack-size vm) 1)))
     (setf (vm-bp vm) (vm-stack-begin vm))
     (setf (vm-sp vm) (vm-stack-begin vm))
     (setf (vm-fp vm) (vm-stack-begin vm)))
   t)
 
 (defun vm-run (&key main vm)
-  (rplacd (assoc 'vm-running vm) t)
+  (rplacd (vm-running-cell vm) t)
   (loop while (is-vm-running vm) do
 	(let ((next-pc (vm-exec (find-statement (vm-pc vm) :vm vm) :vm vm)))
 	  (if next-pc
