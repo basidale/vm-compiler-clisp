@@ -1,3 +1,4 @@
+					;TODO: Add move with register
 					;TODO: main argument in vm-exec
 					;TODO: Empty code in memory when vm-load
 					;TODO: vm-exec : let(let) -> let*
@@ -12,6 +13,17 @@
 (defun vm-statements ()
   '((halt . vm-halt)
     (push . vm-push)))
+;;    (move . vm-move)))
+
+(defun vm-registers-mapping ()
+  '((R0 . 0)
+    (R1 . 1)
+    (R2 . 2)
+    (BP . 3)
+    (SP . 4)
+    (FP . 5)
+    (PC . 6)
+    (CMP . 7)))
 
 (defun make-vm (&key name memory-size stack-size)
   `((vm-stack-size . ,stack-size)
@@ -33,9 +45,9 @@
     (rplacd (vm-code-end-cell vm) index)
     (rplacd (vm-stack-begin-cell vm) (+ index 1))
     (rplacd (vm-stack-end-cell vm) (+ (vm-stack-begin vm) (- (vm-stack-size vm) 1)))
-    (setf (vm-bp vm) (vm-stack-begin vm))
-    (setf (vm-sp vm) (vm-stack-begin vm))
-    (setf (vm-fp vm) (vm-stack-begin vm)))
+    (setf (vm-get-register vm 'BP) (vm-stack-begin vm))
+    (setf (vm-get-register vm 'SP) (vm-stack-begin vm))
+    (setf (vm-get-register vm 'FP) (vm-stack-begin vm)))
   t)
 
 (defun vm-run (&key main vm)

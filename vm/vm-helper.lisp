@@ -31,32 +31,14 @@
 (defun vm-registers (vm)
   (cdr (assoc 'vm-registers vm)))
 
-(defmacro vm-r0 (vm)
-  '(aref (vm-registers vm) 0))
-
-(defmacro vm-r1 (vm)
-  '(aref (vm-registers vm) 1))
-
-(defmacro vm-r2 (vm)
-  '(aref (vm-registers vm) 2))
-
-(defmacro vm-bp (vm)
-  '(aref (vm-registers vm) 3))
-
-(defmacro vm-sp (vm)
-  '(aref (vm-registers vm) 4))
-
-(defmacro vm-fp (vm)
-  '(aref (vm-registers vm) 5))
-
-(defmacro vm-pc (vm)
-  '(aref (vm-registers vm) 6))
-
-(defmacro vm-comparison (vm)
-  '(aref (vm-registers) 7))
+(defmacro vm-get-register (vm register)
+  `(aref (vm-registers ,vm) (vm-register-index ,register)))
 
 (defun is-vm-running (vm)
   (cdr (vm-running-cell vm)))
 
 (defun find-statement (pc &key vm)
   (aref (cdr (assoc 'vm-memory vm)) pc))
+
+(defun vm-register-index (register)
+  (cdr (assoc register (vm-registers-mapping))))
