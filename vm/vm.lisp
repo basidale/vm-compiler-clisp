@@ -1,4 +1,6 @@
 					;TODO: Add move with register
+					;TODO:  Remove code-begin/end stack-begin/end if unused
+					;TODO: Try rplacd -> setf
 					;TODO: main argument in vm-exec
 					;TODO: Empty code in memory when vm-load
 					;TODO: vm-exec : let(let) -> let*
@@ -6,14 +8,11 @@
 					;TODO: Check stack size < memory and code < remaining space
 					;TODO: Automatically halt when code-end reached
 					;TODO: setf(aref) -> using macro
+					;TODO: Resolution table -> hashtable
 
 (require "vm-helper.lisp")
+(require "vm-address-resolution.lisp")
 (require "vm-statements.lisp")
-
-(defun vm-statements ()
-  '((halt . vm-halt)
-    (push . vm-push)))
-;;    (move . vm-move)))
 
 (defun vm-registers-mapping ()
   '((R0 . 0)
@@ -29,31 +28,29 @@
   `((vm-stack-size . ,stack-size)
     (vm-name . ,name)
     (vm-memory . ,(make-array memory-size))
-    (vm-code-begin . 0)
-    (vm-code-end . nil)
-    (vm-stack-begin . nil)
-    (vm-stack-end . nil)
     (vm-registers . ,(make-array 8 :initial-element 0))
-    (vm-running . nil)))
+    (vm-running . nil)
+    (vm-resolution-table . nil)))
 
 (defun vm-load (code &key vm)
   (let ((index -1))
     (loop for stmt in code do
 	  (progn
 	    (setq index (+ index 1))
-	    (setf (aref (vm-memory vm) index) stmt)))
-    (rplacd (vm-code-end-cell vm) index)
-    (rplacd (vm-stack-begin-cell vm) (+ index 1))
-    (rplacd (vm-stack-end-cell vm) (+ (vm-stack-begin vm) (- (vm-stack-size vm) 1)))
-    (setf (vm-get-register vm 'BP) (vm-stack-begin vm))
-    (setf (vm-get-register vm 'SP) (vm-stack-begin vm))
-    (setf (vm-get-register vm 'FP) (vm-stack-begin vm)))
+	    (setf (aref (vm-memory vm) index) stmt)
+	    (if (equal (car stmt) 'label)
+		(vm-add-to-resolution-table vm (cadr stmt) index)
+	      nil)))
+    (let ((stack-begin (+ index 1)))
+      (setf (vm-get-register vm 'BP) stack-begin)
+      (setf (vm-get-register vm 'SP) stack-begin)
+      (setf (vm-get-register vm 'FP) stack-begin)))
   t)
 
 (defun vm-run (&key main vm)
   (rplacd (vm-running-cell vm) t)
   (loop while (is-vm-running vm) do
-	(let ((next-pc (vm-exec (find-statement (vm-pc vm) :vm vm) :vm vm)))
+	(let ((next-pc (vm-exec (find-statement (vm-get-register vm 'PC) :vm vm) :vm vm)))
 	  (if next-pc
 	      (setf (aref (vm-registers vm) 6) next-pc)))))
 
