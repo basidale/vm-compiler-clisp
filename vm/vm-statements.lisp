@@ -26,7 +26,7 @@
     (if (symbolp src)
 	(setf (vm-get-register vm dest) (vm-get-register vm src))
       (setf (vm-get-register vm dest) src)))
-  (+ (vm-get-register vm 'PC)  1))
+  (increment-program-counter vm))
 
 (defun vm-add (vm args)
   (let ((src (car args))
@@ -40,9 +40,12 @@
     (vm-resolve-address vm label)))
 
 (defun vm-label (vm args)
-  (+ (vm-get-register vm 'PC)  1))
+  (increment-program-counter vm))
 
 (defun src-dispatch (vm src)
   (cond
    ((and (consp src) (equal (car src) 'FP)) (vm-fp-find vm (cadr src)))
    (t src)))
+
+(defun increment-program-counter (vm)
+  (+ (vm-get-register vm 'PC)  1))
