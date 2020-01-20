@@ -32,8 +32,7 @@
   (let ((src (car args))
 	(dest (cadr args)))
     (setf (vm-get-register vm dest) (+ (vm-get-register vm src) (vm-get-register vm dest))))
-  (+ (vm-get-register vm 'PC) 1))
-
+  (increment-program-counter vm))
 
 (defun vm-jsr (vm args)
   (let ((label (car args)))
