@@ -1,6 +1,7 @@
 (defun vm-statements ()
   '((halt . vm-halt)
     (push . vm-push)
+    (pop . vm-pop)
     (move . vm-move)
     (jsr . vm-jsr)
     (label . vm-label)
@@ -15,18 +16,20 @@
   nil)
 
 (defun vm-push (vm args)
-  (let ((src (car args)))
-    (vm-stack-push vm (cadr src)))
+  (let ((src (src-dispatch vm (car args))))
+    (vm-stack-push vm src))
+  (+ (vm-get-register vm 'PC) 1))
+
+(defun vm-pop (vm args)
+  (let ((dest (car args)))
+    (vm-stack-pop vm dest))
   (+ (vm-get-register vm 'PC) 1))
 
 (defun vm-move (vm args)
-  (let ((src (car args))
+  (let ((src (src-dispatch vm (car args)))
 	(dest (cadr args)))
-    (setq src (src-dispatch vm src))
-    (if (symbolp src)
-	(setf (vm-get-register vm dest) (vm-get-register vm src))
-      (setf (vm-get-register vm dest) src)))
-  (increment-program-counter vm))
+    (setf (vm-get-register vm dest) src)
+  (increment-program-counter vm)))
 
 (defun vm-add (vm args)
   (let ((src (car args))
@@ -54,7 +57,7 @@
   (cond
    ((and (consp src) (equal (car src) 'FP)) (vm-fp-find vm (cadr src)))
    ((and (consp src) (equal (car src) ':const)) (cadr src))
-   (t src)))
+   ((symbolp src) (vm-get-register vm src))))
 
 (defun increment-program-counter (vm)
   (+ (vm-get-register vm 'PC)  1))

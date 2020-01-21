@@ -52,6 +52,9 @@
 (defun vm-exec (stmt &key vm)
   (let ((verb (car stmt ))
 	(args (cdr stmt)))
+    (print vm)
+    (print stmt)
+
     (let ((callback (assoc verb (vm-statements))))
       (if callback
 	  (apply (cdr callback) (list vm args))

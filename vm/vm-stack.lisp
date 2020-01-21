@@ -2,7 +2,7 @@
 
 (defun vm-stack-push (vm src)
   (setf (vm-memory-at (vm-get-register vm 'SP) vm) src)
-  (setf (vm-get-register vm 'SP) (+ 1 (vm-get-register vm 'SP))))
+  (setf (vm-get-register vm 'SP) (+ 1 (vm-get-register vm 'SP))))x
 
 (defun vm-stack-pop (vm dest)
   (setf (vm-get-register vm 'SP) (- (vm-get-register vm 'SP) 1))
