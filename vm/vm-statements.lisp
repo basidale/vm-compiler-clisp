@@ -35,12 +35,9 @@
   (increment-program-counter vm)))
 
 (defun vm-add (vm args)
-  (let ((src (car args))
+  (let ((src (src-dispatch vm (car args)))
 	(dest (cadr args)))
-    (setq src (src-dispatch vm src))
-    (if (symbolp src)
-	(setf (vm-get-register vm dest) (+ (vm-get-register vm src) (vm-get-register vm dest)))
-      (setf (vm-get-register vm dest) (+ src (vm-get-register vm dest)))))
+    (setf (vm-get-register vm dest) (+ src (vm-get-register vm dest))))
   (increment-program-counter vm))
 
 (defun vm-jsr (vm args)
