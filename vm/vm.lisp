@@ -52,10 +52,7 @@
 (defun vm-exec (stmt &key vm)
   (let ((verb (car stmt ))
 	(args (cdr stmt)))
-    (print vm)
-    (print stmt)
-
-    (let ((callback (assoc verb (vm-statements))))
+    (let ((callback (find-statement-callback verb)))
       (if callback
 	  (apply (cdr callback) (list vm args))
 	(error "~S is not implemented" verb)))))
