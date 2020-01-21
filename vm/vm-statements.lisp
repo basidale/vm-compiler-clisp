@@ -4,7 +4,8 @@
     (move . vm-move)
     (jsr . vm-jsr)
     (label . vm-label)
-    (add . vm-add)))
+    (add . vm-add)
+    (rtn . vm-rtn)))
 
 (defun find-statement (pc &key vm)
   (aref (cdr (assoc 'vm-memory vm)) pc))
@@ -15,8 +16,7 @@
 
 (defun vm-push (vm args)
   (let ((src (car args)))
-    (setf (aref (vm-memory vm) (vm-get-register vm 'SP)) (cadr src))
-    (setf (aref (vm-registers vm) 4) (+ (vm-get-register vm 'SP) 1)))
+    (vm-stack-push vm (cadr src)))
   (+ (vm-get-register vm 'PC) 1))
 
 (defun vm-move (vm args)
@@ -31,12 +31,21 @@
 (defun vm-add (vm args)
   (let ((src (car args))
 	(dest (cadr args)))
-    (setf (vm-get-register vm dest) (+ (vm-get-register vm src) (vm-get-register vm dest))))
+    (setq src (src-dispatch vm src))
+    (if (symbolp src)
+	(setf (vm-get-register vm dest) (+ (vm-get-register vm src) (vm-get-register vm dest)))
+      (setf (vm-get-register vm dest) (+ src (vm-get-register vm dest))))
+    )
   (increment-program-counter vm))
 
 (defun vm-jsr (vm args)
   (let ((label (car args)))
+    (vm-stack-push vm (+ (vm-get-register vm 'PC) 1))
     (vm-resolve-address vm label)))
+
+(defun vm-rtn (vm args)
+  (vm-stack-pop vm 'PC)
+  (vm-get-register vm 'PC))
 
 (defun vm-label (vm args)
   (increment-program-counter vm))
@@ -44,6 +53,7 @@
 (defun src-dispatch (vm src)
   (cond
    ((and (consp src) (equal (car src) 'FP)) (vm-fp-find vm (cadr src)))
+   ((and (consp src) (equal (car src) ':const)) (cadr src))
    (t src)))
 
 (defun increment-program-counter (vm)

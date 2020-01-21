@@ -1,3 +1,4 @@
+					;TODO: Check decrement before pop
 					;TODO: Add move with register
 					;TODO:  Remove code-begin/end stack-begin/end if unused
 					;TODO: Try rplacd -> setf
@@ -11,10 +12,12 @@
 					;TODO: Resolution table -> hashtable
 					;TODO: maybe add (pop nil)
 
+
 (require "vm-helper.lisp")
 (require "vm-address-resolution.lisp")
-(require "vm-statements.lisp")
 (require "vm-registers.lisp")
+(require "vm-stack.lisp")
+(require "vm-statements.lisp")
 
 (defun make-vm (&key name memory-size stack-size)
   `((vm-stack-size . ,stack-size)
@@ -45,7 +48,8 @@
 	(progn
 	  (let ((next-pc (vm-exec (find-statement (vm-get-register vm 'PC) :vm vm) :vm vm)))
 	    (if next-pc
-		(setf (aref (vm-registers vm) 6) next-pc))))))
+		(setf (aref (vm-registers vm) 6) next-pc)))))
+  (vm-get-register vm 'R0))
 
 (defun vm-exec (stmt &key vm)
   (let ((verb (car stmt ))
