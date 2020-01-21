@@ -18,12 +18,12 @@
 (defun vm-push (vm args)
   (let ((src (src-dispatch vm (car args))))
     (vm-stack-push vm src))
-  (+ (vm-get-register vm 'PC) 1))
+  (increment-program-counter vm))
 
 (defun vm-pop (vm args)
   (let ((dest (car args)))
     (vm-stack-pop vm dest))
-  (+ (vm-get-register vm 'PC) 1))
+  (increment-program-counter vm))
 
 (defun vm-move (vm args)
   (let ((src (src-dispatch vm (car args)))
