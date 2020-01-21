@@ -8,7 +8,7 @@
     (rtn . vm-rtn)))
 
 (defun find-statement (pc &key vm)
-  (aref (cdr (assoc 'vm-memory vm)) pc))
+  (vm-memory-at pc vm))
 
 (defun vm-halt (vm args)
   (rplacd (assoc 'vm-running vm) nil)

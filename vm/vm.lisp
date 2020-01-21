@@ -11,16 +11,14 @@
 					;TODO: setf(aref) -> using macro
 					;TODO: Resolution table -> hashtable
 					;TODO: maybe add (pop nil)
-
-
-(require "vm-helper.lisp")
 (require "vm-address-resolution.lisp")
+(require "vm-memory.lisp")
 (require "vm-registers.lisp")
 (require "vm-stack.lisp")
 (require "vm-statements.lisp")
 
 (defun make-vm (&key name memory-size stack-size)
-  `((vm-stack-size . ,stack-size)
+  `((vm- stack-size . ,stack-size)
     (vm-name . ,name)
     (vm-memory . ,(make-array memory-size))
     (vm-registers . ,(make-array 8 :initial-element 0))
@@ -32,7 +30,7 @@
     (loop for stmt in code do
 	  (progn
 	    (setq index (+ index 1))
-	    (setf (aref (vm-memory vm) index) stmt)
+	    (setf (vm-memory-at index vm) stmt)
 	    (if (equal (car stmt) 'label)
 		(vm-add-to-resolution-table vm (cadr stmt) index)
 	      nil)))
@@ -59,3 +57,8 @@
 	  (apply (cdr callback) (list vm args))
 	(error "~S is not implemented" verb)))))
   
+(defmacro vm-running-cell (vm)
+  `(assoc 'vm-running ,vm))
+
+(defun is-vm-running (vm)
+  (cdr (vm-running-cell vm)))
