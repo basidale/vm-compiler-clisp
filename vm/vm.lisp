@@ -1,6 +1,6 @@
 					;TODO: Check decrement before pop
 					;TODO: Add move with register
-					;TODO:  Remove code-begin/end stack-begin/end if unused
+					;TODO: incr -> add in add.lisp
 					;TODO: Try rplacd -> setf
 					;TODO: main argument in vm-exec
 					;TODO: Empty code in memory when vm-load
