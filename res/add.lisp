@@ -1,3 +1,5 @@
+ 					;TODO: Try avoiding store fp in stack
+
 ;; (defun add(x y)
 ;;   (+ x y))
 ;; (add 1 2)
@@ -13,7 +15,6 @@
 		(halt)
 		(label add)
 		(move (fp -2) R1)
-		(move (fp -1) R2)
-		(add R1 R2)
-		(move R2 R0)
+		(move (fp -1) R0)
+		(add R1 R0)
 		(rtn)))

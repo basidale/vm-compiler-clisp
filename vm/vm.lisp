@@ -46,7 +46,7 @@
 	(progn
 	  (let ((next-pc (vm-exec (find-statement (vm-get-register vm 'PC) :vm vm) :vm vm)))
 	    (if next-pc
-		(setf (aref (vm-registers vm) 6) next-pc)))))
+		(setf (vm-get-register vm 'PC) next-pc)))))
   (vm-get-register vm 'R0))
 
 (defun vm-exec (stmt &key vm)
