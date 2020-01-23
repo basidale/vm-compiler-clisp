@@ -17,6 +17,7 @@
 (require "vm-stack.lisp")
 (require "vm-statements.lisp")
 
+					;TODO: remove name
 (defun make-vm (&key name memory-size stack-size)
   `((vm- stack-size . ,stack-size)
     (vm-name . ,name)
