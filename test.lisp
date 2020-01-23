@@ -8,7 +8,7 @@
   (print code)
 
   (setq vm (make-vm :name "vm" :memory-size 100 :stack-size 50))
-  (vm-load code :vm vm)
+  (vm-load codeadd :vm vm)
   (setq result (vm-run :main nil :vm vm))
 
   (print "Result : ")

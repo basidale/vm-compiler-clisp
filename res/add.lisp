@@ -1,16 +1,13 @@
- 					;TODO: Try avoiding store fp in stack
-
 ;; (defun add(x y)
 ;;   (+ x y))
 ;; (add 1 2)
 
 (setq codeadd '((push (:const 1))
 		(push (:const 2))
-		(push FP)
 		(move SP FP)
-		(add (:const -1) FP)
+		(push (:const 2))
 		(jsr add)
-		(pop FP)
+		(add (:const -2) FP)
 		(add (:const -2) SP)
 		(halt)
 		(label add)

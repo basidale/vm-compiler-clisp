@@ -4,16 +4,14 @@
   `(push (:const ,arg)))
 
 (defun function-call-update-fp ()
-  '((push FP)
-    (move SP FP)
-    (add (:const -1) FP)))
+  '((move SP FP)))
 
 (defun function-call-break (label)
   `((jsr ,label)))
 
 (defun function-call-reset-stack (args)
-  `((pop FP)
-    (add (:const ,(- 0 (length args))) SP)))
+  `((add (:const ,(- 1 (length args))) SP)
+    (add (:const ,(- 0 (length args))) FP)))
 
 (defun compile-function-call (name args instructions-list)
   (let ((target (append (map 'list #'function-call-push-argument args)
