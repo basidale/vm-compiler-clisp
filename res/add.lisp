@@ -8,7 +8,7 @@
 		(push (:const 2))
 		(jsr add)
 		(add (:const -2) FP)
-		(add (:const -2) SP)
+		(add (:const -3) SP)
 		(halt)
 		(label add)
 		(move (fp -2) R1)

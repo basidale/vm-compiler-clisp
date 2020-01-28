@@ -29,12 +29,12 @@
 (defun vm-load (code &key vm)
   (let ((index -1))
     (loop for stmt in code do
-	  (progn
-	    (setq index (+ index 1))
-	    (setf (vm-memory-at index vm) stmt)
-	    (if (equal (car stmt) 'label)
-		(vm-add-to-resolution-table vm (cadr stmt) index)
-	      nil)))
+      (progn
+	(setq index (+ index 1))
+	(setf (vm-memory-at index vm) stmt)
+	(if (equal (car stmt) 'label)
+	    (vm-add-to-resolution-table vm (cadr stmt) (+ index 1))
+	    nil)))
     (let ((stack-begin (+ index 1)))
       (setf (vm-get-register vm 'BP) stack-begin)
       (setf (vm-get-register vm 'SP) stack-begin)
@@ -44,10 +44,12 @@
 (defun vm-run (&key main vm)
   (rplacd (vm-running-cell vm) t)
   (loop while (is-vm-running vm) do
-	(progn
-	  (let ((next-pc (vm-exec (find-statement (vm-get-register vm 'PC) :vm vm) :vm vm)))
-	    (if next-pc
-		(setf (vm-get-register vm 'PC) next-pc)))))
+    (progn
+      (print (find-statement (vm-get-register vm 'PC) :vm vm))
+
+      (let ((next-pc (vm-exec (find-statement (vm-get-register vm 'PC) :vm vm) :vm vm)))
+	(if next-pc
+	    (setf (vm-get-register vm 'PC) next-pc)))))
   (vm-get-register vm 'R0))
 
 (defun vm-exec (stmt &key vm)
@@ -55,9 +57,9 @@
 	(args (cdr stmt)))
     (let ((callback (find-statement-callback verb)))
       (if callback
-	  (apply (cdr callback) (list vm args))
-	(error "~S is not implemented" verb)))))
-  
+	    (apply (cdr callback) (list vm args))
+	    (error "~S is not implemented" verb)))))
+
 (defmacro vm-running-cell (vm)
   `(assoc 'vm-running ,vm))
 
