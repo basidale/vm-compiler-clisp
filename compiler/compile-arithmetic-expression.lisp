@@ -39,5 +39,5 @@
   (not (null (assoc (car expr) (arithmetic-operators)))))
 
 (defun compile-arithmetic-expression (operator args env)
-  (funcall (arithmetic-compiler operator) args env))
+  (make-result (funcall (arithmetic-compiler operator) args env)))
 

@@ -19,6 +19,11 @@
 (require 'vm-stack "./vm/vm-stack.lisp")
 (require 'vm-statements "./vm/vm-statements.lisp")
 
+(defmacro vm-running-cell (vm)
+  `(assoc 'vm-running ,vm))
+
+(defun is-vm-running (vm)
+  (cdr (vm-running-cell vm)))
 					;TODO: remove name
 (defun make-vm (&key name memory-size stack-size)
   `((vm- stack-size . ,stack-size)
@@ -61,9 +66,3 @@
       (if callback
 	    (apply (cdr callback) (list vm args))
 	    (error "~S is not implemented" verb)))))
-
-(defmacro vm-running-cell (vm)
-  `(assoc 'vm-running ,vm))
-
-(defun is-vm-running (vm)
-  (cdr (vm-running-cell vm)))

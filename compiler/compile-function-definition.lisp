@@ -1,19 +1,20 @@
-(defun function-definition-header (name)
+(defun function-header (name)
   `((label ,name)))
 
-(defun function-definition-body (args body)
-  (let ((instructions-list nil))
+(defun function-body (args body)
+  (let ((target nil))
     (loop for stmt in body do
-	 (setq instructions-list (append instructions-list (compile-expr stmt args nil instructions-list))))
-    instructions-list))
+      (setq target (append target (result-code (compile-expr stmt args)))))
+    target))
 
-(defun function-definition-end ()
+(defun function-end ()
   '((rtn)))
 
 (defun compile-defun (name args body)
-  (append (function-definition-header name)
-	  (function-definition-body args body)
-	  (function-definition-end)))
+  (let ((target (append (function-header name)
+			(function-body args body)
+			(function-end))))
+    (make-result target :function-definition t)))
 
 (defun args-mapping (env)
   (let ((index (length env)))
