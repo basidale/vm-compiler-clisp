@@ -1,5 +1,3 @@
-
-					;TODO: Check function is defined
 (defun compile-expr (expr env)
   (let ((result nil))
     (cond
@@ -11,4 +9,6 @@
        (setq result (compile-arithmetic-expression (car expr) (cdr expr) env)))
       (t
        (setq result (compile-function-call (car expr) (cdr expr)))))
+    (print expr)
+    (print result)
     result))

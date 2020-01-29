@@ -1,5 +1,3 @@
-					;TODO: Check function exists
-
 (defun function-call-push-argument (arg)
   `(push (:const ,arg)))
 

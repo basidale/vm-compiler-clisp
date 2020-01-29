@@ -1,4 +1,3 @@
-					;TODO: Rename compiler-result
 (defmacro result-code-cell (result)
   `(assoc 'code ,result))
 

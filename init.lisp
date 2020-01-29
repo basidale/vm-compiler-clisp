@@ -1,0 +1,13 @@
+(require 'compile-result "./compiler/compile-result.lisp")
+(require 'compile-arithmetic-expression "./compiler/compile-arithmetic-expression.lisp")
+(require 'compile-function-call "./compiler/compile-function-call.lisp")
+(require 'compile-expression "./compiler/compile-expression.lisp")
+(require 'compile-function-definition "./compiler/compile-function-definition.lisp")
+(require 'compiler "compiler/compiler.lisp")
+
+(require 'vm-address-resolution "./vm/vm-address-resolution.lisp")
+(require 'vm-memory "./vm/vm-memory.lisp")
+(require 'vm-registers "./vm/vm-registers.lisp")
+(require 'vm-stack "./vm/vm-stack.lisp")
+(require 'vm-statements "./vm/vm-statements.lisp")
+(require 'vm "vm/vm.lisp")
