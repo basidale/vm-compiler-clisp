@@ -11,11 +11,11 @@
 					;TODO: setf(aref) -> using macro
 					;TODO: Resolution table -> hashtable
 					;TODO: maybe add (pop nil)
-(require "vm-address-resolution.lisp")
-(require "vm-memory.lisp")
-(require "vm-registers.lisp")
-(require "vm-stack.lisp")
-(require "vm-statements.lisp")
+(require 'codeaddresse "vm-address-resolution.lisp")
+(require 'codevmmeory "vm-memory.lisp")
+(require 'coderegisters "vm-registers.lisp")
+(require 'codestack "vm-stack.lisp")
+(require 'codestatements "vm-statements.lisp")
 
 					;TODO: remove name
 (defun make-vm (&key name memory-size stack-size)
