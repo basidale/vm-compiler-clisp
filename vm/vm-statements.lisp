@@ -94,6 +94,46 @@
 	(label (car args)))
     (if cmp-equal (vm-resolve-address vm label) (increment-program-counter vm))))
 
+(defun vm-cmp-less-than (vm)
+  (if (> (logand (vm-get-register vm 'CMP) #b100) 0) t nil))
+
+(defun vm-jlt (vm args)
+  (let ((cmp-less-than (vm-cmp-less-than vm))
+	(label (car args)))
+    (if cmp-less-than (vm-resolve-address vm label) (increment-program-counter vm))))
+
+(defun vm-cmp-less-equal (vm)
+  (if (> (logand (vm-get-register vm 'CMP) #b110) 0) t nil))
+
+(defun vm-jle (vm args)
+  (let ((cmp-less-equal (vm-cmp-less-than vm))
+	(label (car args)))
+    (if cmp-less-equal (vm-resolve-address vm label) (increment-program-counter vm))))
+
+(defun vm-cmp-greater-than (vm)
+  (if (> (logand (vm-get-register vm 'CMP) #b001) 0) t nil))
+
+(defun vm-jgt (vm args)
+  (let ((cmp-greater-than (vm-cmp-greater-than vm))
+	(label (car args)))
+    (if cmp-greater-than (vm-resolve-address vm label) (increment-program-counter vm))))
+
+(defun vm-cmp-greater-equal (vm)
+  (if (> (logand (vm-get-register vm 'CMP) #b011) 0) t nil))
+
+(defun vm-jge (vm args)
+  (let ((cmp-greater-equal (vm-cmp-greater-equal vm))
+	(label (car args)))
+    (if cmp-greater-equal (vm-resolve-address vm label) (increment-program-counter vm))))
+
+(defun vm-cmp-not-equal (vm)
+  (if (> (logand (vm-get-register vm 'CMP) #b101) 0) t nil))
+
+(defun vm-jne (vm args)
+  (let ((cmp-not-equal (vm-cmp-not-equal vm))
+	(label (car args)))
+    (if cmp-not-equal (vm-resolve-address vm label) (increment-program-counter vm))))
+
 (defun src-dispatch (vm src)
   (cond
    ((and (consp src) (equal (car src) 'FP)) (vm-fp-find vm (cadr src)))
