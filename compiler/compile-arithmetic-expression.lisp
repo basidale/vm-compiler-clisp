@@ -21,13 +21,16 @@
 	  '((add R1 R0))))
 
 (defun compile-sub(args env)
-  (error "compile-sub not implemented"))
+  (append (compile-arithmetic-operation-set-registers args env)
+	  '((sub R1 R0))))
 
 (defun compile-mul(args env)
-  (error "compile-mul not implemented"))
+  (append (compile-arithmetic-operation-set-registers args env)
+	  '((mul R1 R0))))
 
 (defun compile-div(args env)
-  (error "compile-div not implemented"))
+  (append (compile-arithmetic-operation-set-registers args env)
+	  '((div R1 R0))))
 
 (defun arithmetic-compiler (operator)
   (cdr (assoc operator (arithmetic-operators))))

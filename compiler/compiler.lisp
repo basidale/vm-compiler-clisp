@@ -1,20 +1,28 @@
-(require "compile-arithmetic-expression.lisp")
-(require "compile-function-call.lisp")
-(require "compile-expression.lisp")
-(require "compile-function-definition.lisp")
+(require 'compile-arithmetic-expression "./compiler/compile-arithmetic-expression.lisp")
+(require 'compile-function-call "./compiler/compile-function-call.lisp")
+(require 'compile-expression "./compiler/compile-expression.lisp")
+(require 'compile-function-definition "./compiler/compile-function-definition.lisp")
+(require 'compile-results "./compiler/compile-results.lisp")
+
+;; (require 'codecompute "../res/compute/compute.lisp")
 
 (defun compile-on-halt ()
   '((halt)))
 
 (defun compile-code (code)
   (let ((functions-definitions nil)
-	(instructions-list nil))
+	(instructions-list nil)
+	(symbol-table nil))
     (loop for expr in code do
-      (if (equal (car expr) 'defun)
-	  (setq functions-definitions (append functions-definitions (compile-defun (cadr expr) (caddr expr) (cdddr expr))))
-	  (setq instructions-list (append instructions-list (compile-expr expr nil functions-definitions instructions-list)))))
-    (append instructions-list (compile-on-halt) functions-definitions)))
+      (let ((results nil))
+	(if (equal (car expr) 'defun)
+	    (setq results (compile-defun (cadr expr) (caddr expr) (cdddr expr)))
+	    (setq results (compile-expr expr nil)))
+	(let ((functions-definitions (compile-get-function-definition))
+	      (instructions-list (compiler-get-instructions-list)))
+	  (append instructions-list (compile-on-halt) functions-definitions))))
 
-(compile-code '((defun add (x y) (+ x y)) (add 1 2)))
+(compile-code basecode)
+
 
 

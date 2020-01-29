@@ -1,6 +1,6 @@
 
 					;TODO: Check function is defined
-(defun compile-expr (expr env functions-definitions instructions-list)
+(defun compile-expr (expr env)
   (let ((result nil))
     (cond
       ((is-arithmetic-expression expr)
