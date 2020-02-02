@@ -1,23 +1,28 @@
 (defun function-call-push-argument (arg)
   `(push ,arg))
 
-(defun function-call-update-fp ()
-  '((move SP FP)))
+(defun function-call-store-and-update-fp ()
+  '((move FP R1)
+    (move SP FP)))
 
 (defun function-call-push-number-of-arguments (args)
   `((push (:const ,(length args)))))
+
+(defun function-call-push-old-fp ()
+  '((push R1)))
 
 (defun function-call-break (label)
   `((jsr ,label)))
 
 (defun function-call-reset-stack (args)
-  `((add (:const ,(- -1 (length args))) SP)
-    (add (:const ,(- 0 (length args))) FP)))
+  `((pop FP)
+    (add (:const ,(- -1 (length args))) SP)))
 
 (defun compile-function-call (name args)
   (append (map 'list #'function-call-push-argument args)
-	  (function-call-update-fp)
+	  (function-call-store-and-update-fp)
 	  (function-call-push-number-of-arguments args)
+	  (function-call-push-old-fp)
 	  (function-call-break name)
 	  (function-call-reset-stack args)))
 

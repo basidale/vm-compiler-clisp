@@ -1,5 +1,6 @@
 ;; (require 'codecompute "./res/compute.lisp")
-(require 'fact "./res/fact.lisp")
+;; (require 'fact "./res/fact.lisp")
+(require 'fact "./res/fibo.lisp")
 (require 'init "./init.lisp")
 
 (defun test-compile-run (basecode)
@@ -16,7 +17,8 @@
       (print result))))
 
 ;; (test-compile-run '((defun add(x y) (+ x y)) (add 5 3)))
-(test-run codefact)
+;; (test-run codefact)
+(test-run codefibo)
 ;; (test-compile-run (compute-code 'add-op 1 2))
 
 ;; (defun test-compute-sub-5-3 ()

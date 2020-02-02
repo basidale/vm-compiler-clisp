@@ -1,6 +1,7 @@
 					;TODO: main argument in vm-exec
 					;TODO: vm-exec : let(let) -> let*
 					;TODO: Suppress warnings
+					;TODO: fibo resolution table repeat
 
 (defmacro vm-running-cell (vm)
   `(assoc 'vm-running ,vm))
@@ -38,6 +39,7 @@
       (print (find-statement (vm-get-register vm 'PC) :vm vm))
 
       (let ((next-pc (vm-exec (find-statement (vm-get-register vm 'PC) :vm vm) :vm vm)))
+	(print vm)
 	(if next-pc
 	    (setf (vm-get-register vm 'PC) next-pc)))))
   (vm-get-register vm 'R0))
