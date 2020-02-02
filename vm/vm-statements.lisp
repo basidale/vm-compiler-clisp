@@ -9,10 +9,17 @@
     (jsr   . vm-jsr)
     (add   . vm-add)
     (sub   . vm-sub)
+    (mul   . vm-mul)
+    (div   . vm-div)
+    (sub   . vm-sub)
     (rtn   . vm-rtn)
     (load  . vm-load-stmt)
     (cmp . vm-cmp)
+    (jlt . vm-jlt)
+    (jle . vm-jle)
     (jeq . vm-jeq)
+    (jge . vm-jge)
+    (jgt . vm-jgt)
     ;; Non-executable
     (label . vm-label)))
 
@@ -54,6 +61,24 @@
     (setf (vm-get-register vm dest) (- src (vm-get-register vm dest))))
   (increment-program-counter vm))
 
+(defun vm-mul (vm args)
+  (let ((src (src-dispatch vm (car args)))
+	(dest (cadr args)))
+    (setf (vm-get-register vm dest) (* src (vm-get-register vm dest))))
+  (increment-program-counter vm))
+
+(defun vm-div (vm args)
+  (let ((src (src-dispatch vm (car args)))
+	(dest (cadr args)))
+    (setf (vm-get-register vm dest) (/ src (vm-get-register vm dest))))
+  (increment-program-counter vm))
+
+(defun vm-sub (vm args)
+  (let ((src (src-dispatch vm (car args)))
+	(dest (cadr args)))
+    (setf (vm-get-register vm dest) (- src (vm-get-register vm dest))))
+  (increment-program-counter vm))
+
 (defun vm-jsr (vm args)
   (let ((label (car args)))
     (vm-stack-push vm (+ (vm-get-register vm 'PC) 1))
@@ -83,7 +108,7 @@
 	  (eqflag (cmp-flag-value (= src1 src2)))
 	  (gtflag (cmp-flag-value (> src1 src2))))
       (setf (vm-get-register vm 'CMP) 0)
-      (setf (vm-get-register vm 'CMP) (logior ltflag (ash eqflag 1) (ash gtflag 2)))))
+      (setf (vm-get-register vm 'CMP) (logior gtflag (ash eqflag 1) (ash ltflag 2)))))
   (increment-program-counter vm))
 
 (defun vm-cmp-equal (vm)
@@ -106,7 +131,7 @@
   (if (> (logand (vm-get-register vm 'CMP) #b110) 0) t nil))
 
 (defun vm-jle (vm args)
-  (let ((cmp-less-equal (vm-cmp-less-than vm))
+  (let ((cmp-less-equal (vm-cmp-less-equal vm))
 	(label (car args)))
     (if cmp-less-equal (vm-resolve-address vm label) (increment-program-counter vm))))
 
