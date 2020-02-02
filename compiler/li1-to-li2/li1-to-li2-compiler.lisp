@@ -1,0 +1,12 @@
+(defun li1-to-li2-find-function (code)
+  (if (null code)
+      (values nil code)
+      (if (eq (caar code) :function)
+	  (values (car code) (remove (car code) code :test #'equal))
+	  (li1-to-li2-find-function (cdr code)))))
+  
+(defun compile-li1-to-li2 (code)
+  (multiple-value-bind (function remaining-code) (li1-to-li2-find-function code)
+    (if (null function)
+	(list (cons 'main (list nil `(:BODY ,@code))))
+	(acons (cadr function) (cddr function) (compile-li1-to-li2 remaining-code)))))

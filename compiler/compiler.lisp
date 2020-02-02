@@ -1,18 +1,8 @@
-					;TODO: Replace loop by map
-
-(defun compile-on-halt ()
-  '((halt)))
-
 (defun compile-code (code)
-  (let ((functions nil)
-	(instructions nil))
-    (loop for expr in code do
-      (let ((result (compile-expr expr nil)))
-	(if (result-is-function-definition result)
-	    (setq functions (append functions (result-code result)))
-	    (setq instructions (append instructions (result-code result))))))
-    (append instructions (compile-on-halt) functions)))
-
+  (let ((li1-code (compile-cl-to-li1 code)))
+    (let ((li2-code (compile-li1-to-li2 li1-code)))
+      (let ((vm-code (compile-li2-to-vm li2-code)))
+	vm-code))))
 
 
 

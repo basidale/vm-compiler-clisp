@@ -15,15 +15,3 @@
 			(function-body args body)
 			(function-end))))
     (make-result target :function-definition t)))
-
-(defun args-mapping (env)
-  (let ((index (length env)))
-    (map 'list
-	 (lambda (arg)
-	   (let ((pair `(,arg . (fp ,(- index)))))
-	     (setq index (- index 1))
-	     pair))
-	 env)))
-
-(defun args-get-mapping (identifier env)
-  (cdr (assoc identifier (args-mapping env))))
