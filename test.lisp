@@ -1,4 +1,4 @@
-;; (require 'codecompute "./res/compute/compute.lisp")
+;; (require 'codecompute "./res/compute.lisp")
 (require 'init "init.lisp")
 
 (defun test-compile-run (basecode)
@@ -14,7 +14,7 @@
       (print "Result : ")
       (print result))))
 
-(test-compile-run '((defun add(x y) (+ x y)) (add 5 3)))s
+(test-compile-run '((defun add(x y) (+ x y)) (add 5 3)))
 ;; (test-compile-run (compute-code 'add-op 1 2))
 
 ;; (defun test-compute-sub-5-3 ()
