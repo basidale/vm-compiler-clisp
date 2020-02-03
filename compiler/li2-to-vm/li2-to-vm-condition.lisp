@@ -1,0 +1,21 @@
+(defun comparison-operator (operator)
+  (assoc operator '((:lt . jlt)
+		    (:le . jle)
+		    (:eq . jeq)
+		    (:ge . jge)
+		    (:gt . jgt))))
+
+(defun is-comparison (expr)
+  (if (comparison-operator (car expr)) t nil))
+
+(defun compile-comparison (operator first-operand second-operand env src src-dest)
+  (flet ((compile-operand (expr register)
+	   (if (or (equal (car expr) :const) (equal (car expr) :arg))
+	       `(move ,(li2-to-vm-compile-expr expr env src src-dest) ,register)
+	       (error "Compile comparison error : operand type is not supported"))))
+    (list (compile-operand first-operand 'R0)
+	  (compile-operand second-operand 'R1)
+	  '(cmp R0 R1)
+	  `(,(cdr (comparison-operator operator)) label))))
+
+;; (compile-comparison :eq '(:const 1) '(:arg x) '(x) nil nil)

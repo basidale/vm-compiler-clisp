@@ -18,6 +18,7 @@
 (defun cl-to-li1-compile-variable (expr)
   `(:var ,expr))
 
+					;TODO: See how implemented in final phase
 (defun cl-to-li1-arithmetic-operator (expr)
   (assoc (car expr) '((+ . :add)
 		      (- . :sub)
@@ -29,6 +30,19 @@
 
 (defun cl-to-li1-compile-arithmetic-expression (expr args)
   `(,(cdr (cl-to-li1-arithmetic-operator expr)) ,@(cl-to-li1-map-compile (cdr expr) args)))
+
+(defun cl-to-li1-comparison-operator (expr)
+  (assoc (car expr) '((<  . :lt)
+		      (<= . :le)
+		      (=  . :eq)
+		      (>  . :ge)
+		      (>= . :ht))))
+
+(defun cl-to-li1-is-comparison (expr)
+  (if (cl-to-li1-comparison-operator expr) t nil))
+
+(defun cl-to-li1-compile-comparison (expr args)
+  `(,(cdr (cl-to-li1-comparison-operator expr)) ,@(cl-to-li1-map-compile (cdr expr) args)))
 
 (defun cl-to-li1-compile-expr (expr args)
   (if (atom expr)
@@ -45,7 +59,9 @@
 	      (cl-to-li1-compile-condition expr args)
 	      (if (cl-to-li1-is-arithmetic-expression expr)
 		  (cl-to-li1-compile-arithmetic-expression expr args)
-		  (cl-to-li1-compile-function-call expr args))))))
+		  (if (cl-to-li1-is-comparison expr)
+		      (cl-to-li1-compile-comparison expr args)
+		      (cl-to-li1-compile-function-call expr args)))))))
 
 (defun cl-to-li1-map-compile (expr args)
   (map 'list
@@ -55,7 +71,4 @@
 
 (defun compile-cl-to-li1 (code)
   (cl-to-li1-map-compile code nil))
-
-;; (compile-cl-to-li1 '((defun add (a b) (+ a b)) (add 1 2)))
-
 

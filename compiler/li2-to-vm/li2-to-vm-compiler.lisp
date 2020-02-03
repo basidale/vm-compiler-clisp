@@ -3,13 +3,8 @@
 					;TODO: Add dest register parameter to compile functions
 
 					;TODO: Generalize cmp
-;; (defun compile-comparison (condition src src-dest)
-;;   (append ()
-;; 	  (li2-to-vm-compile-expr)))
 
-;; (defun compile-condition (condition then else)
-;;   (append (compile-comparison condition)))
-
+					;TODO: is-constant, is-arg, etc.
 (defun li2-to-vm-compile-expr (expr env src src-dest)
   (cond
     ((equal (car expr) :CONST)
@@ -18,6 +13,8 @@
      (compile-argument expr env))
     ((equal (car expr) :IF)
      (compile-condition (cadr expr) (caddr expr) (caddddr expr)))
+    ((is-comparison (expr))
+     (compile-comparison (car expr) (cadr expr) (caddr expr) env))
     ((is-arithmetic-expression expr)
      (compile-arithmetic-expression (car expr) (li2-to-vm-map-compile-expr (cdr expr) env src src-dest) env src src-dest))
     ((equal (car expr) :CALL)
