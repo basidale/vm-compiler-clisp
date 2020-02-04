@@ -11,8 +11,8 @@
 (defun is-arithmetic-expression (expr)
   (not (null (assoc (car expr) (arithmetic-operators)))))
 
-(defun compile-arithmetic-expression (operator args env compiler)
-  (append (li2-to-vm-compile-expr (car args) env compiler)
+(defun compile-arithmetic-expression (operator args args-env locals-env compiler)
+  (append (li2-to-vm-compile-expr (car args) args-env locals-env compiler)
 	  (list (list 'move 'R0 'R1))
-	  (li2-to-vm-compile-expr (cadr args) env compiler)
+	  (li2-to-vm-compile-expr (cadr args) args-env locals-env compiler)
 	  (list (list (arithmetic-compiler operator) 'R1 'R0))))

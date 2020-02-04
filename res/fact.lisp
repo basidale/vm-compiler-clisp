@@ -1,9 +1,15 @@
 (defun factsource (n)
-  `((defun fact (n)
-      (if (= n 1)
+  `((defun fact (x)
+      (if (= x 1)
 	  1
-	  (* n (fact (- n 1)))))
+	  (let ((y (fact (- x 1))))
+	    (* x y))))
     (fact ,n)))
+
+(defun fact (x)
+  (if (= x 1)
+      1
+      (* x (fact (- x 1)))))
 
 (defun factvm (n)
   `((push (:const ,n))
