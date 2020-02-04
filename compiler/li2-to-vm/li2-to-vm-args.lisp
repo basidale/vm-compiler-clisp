@@ -8,7 +8,7 @@
 	 env)))
 
 (defun fp-get (identifier env)
-  (let ((cell (assoc identifier (args-mapping env))))
+  (let ((cell (assoc identifier (fp-mapping env))))
     (if (null cell)
 	(error "Variable ~S is not bound" identifier)
 	(cdr cell))))
@@ -24,4 +24,6 @@
     ((equal (car expr) :CONST)
      expr)
     ((equal (car expr) :ARG)
-     (fp-get (cadr expr) env))))
+     (fp-get (cadr expr) env))
+    (t (error "~S is not a valid argument" expr))))
+

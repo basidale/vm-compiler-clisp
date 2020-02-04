@@ -18,15 +18,21 @@
     label))
 
 (defun li2-to-vm-compile-expr (expr env compiler)
+  (print expr)
   (cond
-;;    ((equal (car expr) :IF)
-;;     (compile-condition (cadr expr) (cadddr expr) (caddr (cdddr expr)) env compiler))
-;;    ((is-comparison (expr))
-;;     (compile-comparison (car expr) (cadr expr) (caddr expr) env compiler))
+    ((or (equal (car expr) :CONST) (equal (car expr) :ARG))
+     (list (list 'move (compile-argument expr env) 'R0)))
+    ((equal (car expr) :IF)
+     (compile-condition (cadr expr) (cadddr expr) (caddr (cdddr expr)) env compiler))
+    ((is-comparison expr)
+     (compile-comparison (car expr) (cadr expr) (caddr expr) env compiler))
     ((is-arithmetic-expression expr)
      (compile-arithmetic-expression (car expr) (map-compile-argument (cdr expr) env) env))
     ((equal (car expr) :CALL)
-     (compile-function-call (cadr expr) (map-compile-argument (cddr expr) env)))
+     (progn
+       (print "foo")
+       (compile-function-call (cadr expr) (map-compile-argument (cddr expr) env)))
+     )
     (t (error "Uncompilable expression ~S" expr))))
 
 (defun li2-to-vm-map-compile-expr (expr env compiler)
@@ -50,11 +56,11 @@
   '((JSR MAIN)(HALT)))
 
 (defun compile-li2-to-vm (code)
-  (let ((compiler (make-compiler)))
+  (let ((compiler (list (cons 'label-counter 0))))
     (labels ((recurs (code)
 	       (if (null code)
 		   nil
 		   (append (li2-to-vm-compile-function (car code) compiler)
 			   (recurs (cdr code))))))
       (append (li2-to-vm-jump-to-main)
-	      (recurs code)))))
+	      (recurs code)))))<
