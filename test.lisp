@@ -16,18 +16,29 @@
       (print "Result : ")
       (print result))))
 
-(test-compile-run (fibosource 10))
+(defun compile-run-fact (n)
+  (format t "~%factorial(~D) : " n)
+  (test-compile-run (factsource n)))
 
-(test-compile-run (factsource 10))
-(test-run (fibovm 4))
+(defun compile-run-fibo (n)
+  (format t "~%fibonacci(~D) : " n)
+  (test-compile-run (fibosource n)))
 
-(compile-li1-to-li2 (compile-cl-to-li1 (factsource 10)))
+(compile-run-fact 10)
+(compile-run-fibo 10)
 
-(compile-cl-to-li1 (factsource 10))
+;; (test-compile-run (fibosource 10))
 
-;; (test-compile-run '((defun add(x y) (+ x y)) (add 5 3)))
-;; (test-run (factvm 10))
-;; (test-compile-run (compute-code 'add-op 1 2))
 
-815915283247897734345611269596115894272000000000
-815915283247897734345611269596115894272000000000 
+;; (test-run (fibovm 4))
+
+;; (compile-li1-to-li2 (compile-cl-to-li1 (factsource 10)))
+
+;; (compile-cl-to-li1 (factsource 10))
+
+;; ;; (test-compile-run '((defun add(x y) (+ x y)) (add 5 3)))
+;; ;; (test-run (factvm 10))
+;; ;; (test-compile-run (compute-code 'add-op 1 2))
+
+;; 815915283247897734345611269596115894272000000000
+;; 815915283247897734345611269596115894272000000000 
