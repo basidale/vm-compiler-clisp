@@ -10,13 +10,13 @@
     (test-run code)))
 
 (defun test-run (code)
-  (let ((vm (make-vm :name "vm" :memory-size 100 :stack-size 50)))
+  (let ((vm (make-vm :name "vm" :memory-size 1000 :stack-size 200)))
     (vm-load code :vm vm)
     (let ((result (vm-run :main nil :vm vm)))
       (print "Result : ")
       (print result))))
 
-(test-compile-run (factsource 10))
+(test-compile-run (factsource 3))
 
 (compile-li1-to-li2 (compile-cl-to-li1 (factsource 10)))
 
@@ -26,3 +26,6 @@
 ;; (test-run (factvm 10))
 ;; (test-run codefibo)
 ;; (test-compile-run (compute-code 'add-op 1 2))
+
+815915283247897734345611269596115894272000000000
+815915283247897734345611269596115894272000000000 

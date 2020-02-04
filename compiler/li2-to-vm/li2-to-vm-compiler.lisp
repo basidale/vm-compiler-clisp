@@ -14,7 +14,7 @@
 
 (defun compiler-increment-label-counter (compiler)
   (let ((label (compiler-label-counter compiler)))
-    (rplacd (compiler-label-counter-cell compiler) (+ label 1))
+    (setf (cdr (compiler-label-counter-cell compiler)) (+ label 1))
     label))
 
 (defun compile-let (symbol binding body args-env locals-env compiler)

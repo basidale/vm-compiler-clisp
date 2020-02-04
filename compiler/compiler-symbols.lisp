@@ -5,7 +5,7 @@
   (cdr (compiler-symbols-cell compiler)))
 
 (defun compiler-add-to-symbols (symbol value compiler)
-  (rplacd (assoc 'symbols compiler) (acons symbol value (compiler-symbols compiler))))
+  (setf (cdr (compiler-symbols-cell)) (acons symbol value (compiler-symbols compiler))))
 
 (defun compiler-symbol-value (symbol compiler)
   (let ((symbol (cdr (assoc symbol (compiler-symbols compiler)))))
