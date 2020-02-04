@@ -1,4 +1,4 @@
-(defun args-mapping (env)
+(defun fp-mapping (env)
   (let ((index (length env)))
     (map 'list
 	 (lambda (arg)
@@ -7,11 +7,21 @@
 	     pair))
 	 env)))
 
-(defun args-get-mapping (identifier env)
+(defun fp-get (identifier env)
   (let ((cell (assoc identifier (args-mapping env))))
     (if (null cell)
 	(error "Variable ~S is not bound" identifier)
 	(cdr cell))))
 
+(defun map-compile-argument (expr env)
+  (if (null expr)
+      nil
+      (cons(compile-argument (car expr) env)
+	   (map-compile-argument (cdr expr) env))))
+
 (defun compile-argument (expr env)
-  (args-get-mapping (cadr expr) env))
+  (cond
+    ((equal (car expr) :CONST)
+     expr)
+    ((equal (car expr) :ARG)
+     (fp-get (cadr expr) env))))

@@ -1,4 +1,4 @@
-(defun compile-condition (comparison then else env src src-dest compiler)
+(defun compile-condition (comparison then else env compiler)
   (let ((then-label (compiler-increment-label-counter compiler))
 	(end-label (compiler-increment-label-counter compiler)))
   (append (compile-comparison (car comparison) (cadr comparison) (caddr comparison))
@@ -17,10 +17,10 @@
 (defun is-comparison (expr)
   (if (comparison-operator (car expr)) t nil))
 
-(defun compile-comparison (operator first-operand second-operand env src src-dest compiler)
+(defun compile-comparison (operator first-operand second-operand env compiler)
   (flet ((compile-operand (expr register)
 	   (if (or (equal (car expr) :const) (equal (car expr) :arg))
-	       `(move ,(li2-to-vm-compile-expr expr env src src-dest compiler) ,register)
+	       `(move ,(li2-to-vm-compile-expr expr env compiler) ,register)
 	       (error "Compile comparison error : operand type is not supported"))))
     (list (compile-operand first-operand 'R0)
 	  (compile-operand second-operand 'R1)

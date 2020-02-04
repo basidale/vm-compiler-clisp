@@ -17,6 +17,7 @@
       (print result))))
 
 (compile-code (factsource 10))
+;; (compile-code '((defun add(x y) (+ x y)) (add 5 3)))
 ;; (test-compile-run '((defun add(x y) (+ x y)) (add 5 3)))
 ;; (test-run (factvm 10))
 ;; (test-run codefibo)
