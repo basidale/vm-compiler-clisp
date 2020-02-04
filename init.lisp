@@ -1,8 +1,10 @@
 (require 'compile-cl-to-li1 "./compiler/cl-to-li1/cl-to-li1-compiler.lisp")
 (require 'compile-li1-to-li2 "./compiler/li1-to-li2/li1-to-li2-compiler.lisp")
+(require 'li2-to-vm-args "./compiler/li2-to-vm/li2-to-vm-args.lisp")
 (require 'li2-to-vm-arithmetic-expression "./compiler/li2-to-vm/li2-to-vm-arithmetic-expression.lisp")
 (require 'li2-to-vm-args "./compiler/li2-to-vm/li2-to-vm-args.lisp")
 (require 'li2-to-vm-function-call "./compiler/li2-to-vm/li2-to-vm-function-call.lisp")
+(require 'li2-to-vm-condition "./compiler/li2-to-vm/li2-to-vm-condition.lisp")
 (require 'compile-li2-to-vm "./compiler/li2-to-vm/li2-to-vm-compiler.lisp")
 (require 'compiler "./compiler/compiler.lisp")
 

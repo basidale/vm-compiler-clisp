@@ -1,45 +1,70 @@
 					;TODO: Normalize names
 					;TODO: use &rest and apply instead of funcall
 					;TODO: Add dest register parameter to compile functions
-
 					;TODO: Generalize cmp
-;; (defun compile-comparison (condition src src-dest)
-;;   (append ()
-;; 	  (li2-to-vm-compile-expr)))
+					;TODO: is-constant, is-arg, etc.
+(defun make-compiler ()
+  '((label-counter . 0)))
 
-;; (defun compile-condition (condition then else)
-;;   (append (compile-comparison condition)))
+(defmacro compiler-label-counter-cell (compiler)
+  `(assoc 'label-counter ,compiler))
 
-(defun li2-to-vm-compile-expr (expr env src src-dest)
+(defun compiler-label-counter (compiler)
+  (cdr (compiler-label-counter-cell compiler)))
+
+(defun compiler-increment-label-counter (compiler)
+  (let ((label (compiler-label-counter compiler)))
+    (setf (cdr (compiler-label-counter-cell compiler)) (+ label 1))
+    label))
+
+(defun compile-let (symbol binding body args-env locals-env compiler)
+  (append (li2-to-vm-compile-expr binding args-env locals-env compiler)
+	  '((push R0))
+	  (li2-to-vm-compile-expr body args-env (append locals-env (list symbol)) compiler)
+	  '((add (:const -1) SP))))
+
+(defun li2-to-vm-compile-expr (expr args-env locals-env compiler)
   (cond
-    ((equal (car expr) :CONST)
-     expr)
-    ((equal (car expr) :ARG)
-     (compile-argument expr env))
+    ((or (equal (car expr) :CONST) (equal (car expr) :ARG) (equal (car expr) :VAR))
+     (list (list 'move (compile-argument expr args-env locals-env) 'R0)))
     ((equal (car expr) :IF)
-     (compile-condition (cadr expr) (caddr expr) (caddddr expr)))
+     (compile-condition (cadr expr) (cadddr expr) (caddr (cdddr expr)) args-env locals-env compiler))
+    ((is-comparison expr)
+     (compile-comparison (car expr) (cadr expr) (caddr expr) args-env locals-env compiler))
     ((is-arithmetic-expression expr)
-     (compile-arithmetic-expression (car expr) (li2-to-vm-map-compile-expr (cdr expr) env src src-dest) env src src-dest))
+     (compile-arithmetic-expression (car expr) (cdr expr) args-env locals-env compiler))
+    ((equal (car expr) :LET)
+     (compile-let (caadr expr) (cadadr expr) (caddr expr) args-env locals-env compiler))
     ((equal (car expr) :CALL)
-     (compile-function-call (cadr expr) (li2-to-vm-map-compile-expr (cddr expr) env src src-dest)))))
+       (compile-function-call (cadr expr) (cddr expr) args-env locals-env compiler))
+    (t (error "Uncompilable expression ~S" expr))))
 
-(defun li2-to-vm-map-compile-expr (expr args src src-dest)
-  (map 'list
-       (lambda (expr)
-	 (li2-to-vm-compile-expr expr args src src-dest))
-       expr))
+(defun li2-to-vm-map-compile-expr (expr args-env locals-env compiler)
+  (append (li2-to-vm-compile-expr (car expr) args-env locals-env compiler)
+	  (li2-to-vm-map-compile-expr (cdr expr) args-env locals-env compiler)))
 
-(defun li2-to-vm-compile-function (name args body)
-  (append `((label ,name))
-	  (apply #'append (li2-to-vm-map-compile-expr body args 'R1 'R0))
-	  `((rtn))))
+(defun li2-to-vm-compile-function (function compiler)
+  (let ((name (car function))
+	(args (cadr function))
+	(body (cdaddr function)))
+    (labels ((recurs (code)
+	     (if (null code)
+		 nil
+		 (append (li2-to-vm-compile-expr (car code) args nil compiler)
+			 (recurs (cdr code))))))
+      (append `((label ,name))
+	      (recurs body)
+	      '((rtn))))))
 
 (defun li2-to-vm-jump-to-main ()
   '((JSR MAIN)(HALT)))
 
 (defun compile-li2-to-vm (code)
-  (append (li2-to-vm-jump-to-main)
-	  (apply #'append (map 'list
-			       (lambda (function)
-				 (li2-to-vm-compile-function (car function) (cdadr function) (cdaddr function)))
-			       code))))
+  (let ((compiler (list (cons 'label-counter 0))))
+    (labels ((recurs (code)
+	       (if (null code)
+		   nil
+		   (append (li2-to-vm-compile-function (car code) compiler)
+			   (recurs (cdr code))))))
+      (append (li2-to-vm-jump-to-main)
+	      (recurs code)))))

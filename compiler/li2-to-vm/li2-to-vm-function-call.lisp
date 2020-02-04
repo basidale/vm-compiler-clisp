@@ -1,6 +1,3 @@
-(defun function-call-push-argument (arg)
-  `(push ,arg))
-
 (defun function-call-store-and-update-fp ()
   '((move FP R1)
     (move SP FP)))
@@ -18,8 +15,15 @@
   `((pop FP)
     (add (:const ,(- -1 (length args))) SP)))
 
-(defun compile-function-call (name args)
-  (append (map 'list #'function-call-push-argument args)
+(defun function-call-push-arguments (args args-env locals-env compiler)
+  (if (null args)
+      nil
+      (append (li2-to-vm-compile-expr (car args) args-env locals-env compiler)
+	  (list(list 'push 'R0))
+	  (function-call-push-arguments (cdr args) args-env locals-env compiler))))
+
+(defun compile-function-call (name args args-env locals-env compiler)
+  (append (function-call-push-arguments args args-env locals-env compiler)
 	  (function-call-store-and-update-fp)
 	  (function-call-push-number-of-arguments args)
 	  (function-call-push-old-fp)

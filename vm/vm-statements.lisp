@@ -30,7 +30,7 @@
   (vm-memory-at pc vm))
 
 (defun vm-halt (vm args)
-  (rplacd (assoc 'vm-running vm) nil)
+  (setf (cdr (assoc 'vm-running vm)) nil)
   nil)
 
 (defun vm-push (vm args)
