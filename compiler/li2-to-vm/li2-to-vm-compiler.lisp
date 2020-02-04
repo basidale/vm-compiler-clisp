@@ -18,7 +18,6 @@
     label))
 
 (defun li2-to-vm-compile-expr (expr env compiler)
-  (print expr)
   (cond
     ((or (equal (car expr) :CONST) (equal (car expr) :ARG))
      (list (list 'move (compile-argument expr env) 'R0)))
@@ -27,12 +26,9 @@
     ((is-comparison expr)
      (compile-comparison (car expr) (cadr expr) (caddr expr) env compiler))
     ((is-arithmetic-expression expr)
-     (compile-arithmetic-expression (car expr) (map-compile-argument (cdr expr) env) env))
+     (compile-arithmetic-expression (car expr) (cdr expr) env compiler))
     ((equal (car expr) :CALL)
-     (progn
-       (print "foo")
-       (compile-function-call (cadr expr) (map-compile-argument (cddr expr) env)))
-     )
+       (compile-function-call (cadr expr) (cddr expr) env compiler))
     (t (error "Uncompilable expression ~S" expr))))
 
 (defun li2-to-vm-map-compile-expr (expr env compiler)
@@ -63,4 +59,4 @@
 		   (append (li2-to-vm-compile-function (car code) compiler)
 			   (recurs (cdr code))))))
       (append (li2-to-vm-jump-to-main)
-	      (recurs code)))))<
+	      (recurs code)))))

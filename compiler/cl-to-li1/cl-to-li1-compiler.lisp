@@ -7,7 +7,7 @@
 
 					;TODO: Separate case for +-*/
 (defun cl-to-li1-compile-function-call (expr args)
-  `(:call ,(car expr) ,@(cl-to-li1-map-compile (cdr expr) expr)))
+  `(:call ,(car expr) ,@(cl-to-li1-map-compile (cdr expr) args)))
 
 (defun cl-to-li1-compile-constant (expr)
   `(:const ,expr))
@@ -49,9 +49,10 @@
       (if (constantp expr)
 	  (cl-to-li1-compile-constant expr)
 	  (if (symbolp expr)
+	      (progn
 	      (if (member expr args)
 		  (cl-to-li1-compile-argument expr)
-		  (cl-to-li1-compile-variable expr))
+		  (cl-to-li1-compile-variable expr)))
 	      (error "Atomic non-constant found")))
       (if (eq (car expr) 'defun)
 	  (cl-to-li1-compile-function-definition expr args)
