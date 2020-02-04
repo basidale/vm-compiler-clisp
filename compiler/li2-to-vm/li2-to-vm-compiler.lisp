@@ -17,11 +17,20 @@
     (setf (cdr (compiler-label-counter-cell compiler)) (+ label 1))
     label))
 
-(defun compile-let (symbol binding body args-env locals-env compiler)
-  (append (li2-to-vm-compile-expr binding args-env locals-env compiler)
-	  '((push R0))
-	  (li2-to-vm-compile-expr body args-env (append locals-env (list symbol)) compiler)
-	  '((add (:const -1) SP))))
+(defun compile-let (bindings body args-env locals-env compiler)
+  (labels ((find-symbols (bindings)
+	     (if (null bindings)
+		 nil
+		 (cons (caar bindings) (find-symbols (cdr bindings)))))
+	   (compile-bindings (bindings)
+	     (if (null bindings)
+		 nil
+		 (append (li2-to-vm-compile-expr (cadar bindings) args-env locals-env compiler)
+		     '((push R0))
+		     (compile-bindings (cdr bindings))))))
+    (append (compile-bindings bindings)
+	    (li2-to-vm-compile-expr body args-env (append locals-env (find-symbols bindings)) compiler)
+	    `((add (:const ,(- (length bindings))) SP)))))
 
 (defun li2-to-vm-compile-expr (expr args-env locals-env compiler)
   (cond
@@ -34,7 +43,7 @@
     ((is-arithmetic-expression expr)
      (compile-arithmetic-expression (car expr) (cdr expr) args-env locals-env compiler))
     ((equal (car expr) :LET)
-     (compile-let (caadr expr) (cadadr expr) (caddr expr) args-env locals-env compiler))
+     (compile-let (cadr expr) (caddr expr) args-env locals-env compiler))
     ((equal (car expr) :CALL)
        (compile-function-call (cadr expr) (cddr expr) args-env locals-env compiler))
     (t (error "Uncompilable expression ~S" expr))))

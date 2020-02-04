@@ -44,11 +44,18 @@
 (defun cl-to-li1-compile-comparison (expr args locals)
   `(,(cdr (cl-to-li1-comparison-operator expr)) ,@(cl-to-li1-map-compile (cdr expr) args locals)))
 
-(defun cl-to-li1-compile-let (binding expr args locals)
-  (let ((symbol (car binding))
-	(value (cl-to-li1-compile-expr (cadr binding) args locals)))
-    `(:let ,(cons symbol (list value))
-       ,(cl-to-li1-compile-expr expr args (cons symbol locals)))))
+(defun cl-to-li1-compile-let (bindings expr args locals)
+  (labels ((find-symbols (bindings)
+	     (if (null bindings)
+		 nil
+		 (cons (caar bindings) (find-symbols (cdr bindings)))))
+	   (compile-bindings (bindings)
+	     (if (null bindings)
+		 nil
+		 (append `((,(caar bindings) ,(cl-to-li1-compile-expr (cadar bindings) args locals)))
+		     (compile-bindings (cdr bindings))))))
+    `(:let ,(compile-bindings bindings)
+       ,(cl-to-li1-compile-expr expr args (append locals (find-symbols bindings))))))
 
 (defun cl-to-li1-compile-expr (expr args locals)
   (if (atom expr)
@@ -70,7 +77,7 @@
 		  (if (cl-to-li1-is-comparison expr)
 		      (cl-to-li1-compile-comparison expr args locals)
 		      (if (equal (car expr) 'let)
-			  (cl-to-li1-compile-let (caadr expr) (caddr expr) args locals)
+			  (cl-to-li1-compile-let (cadr expr) (caddr expr) args locals)
 			  (cl-to-li1-compile-function-call expr args locals))))))))
 
 (defun cl-to-li1-map-compile (expr args locals)
