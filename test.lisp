@@ -24,7 +24,7 @@
   (format t "~%fibonacci(~D) : " n)
   (test-compile-run (fibosource n)))
 
-;; (compile-run-fact 10)
+;; (compile-run-fact 100)
 ;; (compile-run-fibo 10)
 
 ;; (test-compile-run (fibosource 10))

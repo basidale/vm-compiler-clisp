@@ -33,12 +33,10 @@
 (defun vm-run (&key main vm)
   (setf (cdr (vm-running-cell vm)) t)
   (loop while (is-vm-running vm) do
-    (progn
-      ;; (print (find-statement (vm-get-register vm 'PC) :vm vm))
       (let ((next-pc (vm-exec (find-statement (vm-get-register vm 'PC) :vm vm) :vm vm)))
 	;; (print vm)
 	(if next-pc
-	    (setf (vm-get-register vm 'PC) next-pc)))))
+	    (setf (vm-get-register vm 'PC) next-pc))))
   (vm-get-register vm 'R0))
 
 (defun vm-exec (stmt &key vm)
