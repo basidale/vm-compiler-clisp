@@ -10,7 +10,7 @@
     (test-run code)))
 
 (defun test-run (code)
-  (let ((vm (make-vm :name "vm" :memory-size 1000 :stack-size 200)))
+  (let ((vm (make-vm :memory-size 1000)))
     (vm-load code :vm vm)
     (let ((result (vm-run :main nil :vm vm)))
       (print "Result : ")
@@ -24,8 +24,8 @@
   (format t "~%fibonacci(~D) : " n)
   (test-compile-run (fibosource n)))
 
-(compile-run-fact 10)
-(compile-run-fibo 10)
+;; (compile-run-fact 10)
+;; (compile-run-fibo 10)
 
 ;; (test-compile-run (fibosource 10))
 

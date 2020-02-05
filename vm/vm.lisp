@@ -9,10 +9,8 @@
 (defun is-vm-running (vm)
   (cdr (vm-running-cell vm)))
 					;TODO: remove name
-(defun make-vm (&key name memory-size stack-size)
-  (list (cons 'vm-stack-size stack-size)
-	(cons 'vm-name name)
-	(cons 'vm-memory (make-array memory-size))
+(defun make-vm (&key memory-size)
+  (list (cons 'vm-memory (make-array memory-size))
 	(cons 'vm-registers (make-array 8 :initial-element 0))
 	(cons 'vm-running nil)
 	(cons 'vm-resolution-table nil)))
